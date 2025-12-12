@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Risk-Based Auth</title>
+    <meta name="description" content="Admin dashboard for user management and system monitoring">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="animated-bg"></div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">👑 Admin Dashboard</div>
+            <div class="navbar-menu">
+                <span style="color: var(--text-secondary);">admin@gmail.com</span>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 2rem;">
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalUsers">0</div>
+                <div class="stat-label">👥 Registered Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalFeedback">0</div>
+                <div class="stat-label">💬 User Feedback</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalLogs">0</div>
+                <div class="stat-label">📋 Access Logs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="blockedUsers">0</div>
+                <div class="stat-label">🚫 Blocked Users</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div
+                style="display: flex; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                <button id="logsTabBtn" class="btn btn-primary" onclick="showTab('logs')">Access Logs</button>
+                <button id="usersTabBtn" class="btn btn-secondary" onclick="showTab('users')">Registered Users</button>
+                <button id="feedbackTabBtn" class="btn btn-secondary" onclick="showTab('feedback')">User
+                    Feedback</button>
+                <button id="settingsTabBtn" class="btn btn-secondary" onclick="showTab('settings')">Settings</button>
+            </div>
+
+            <!-- Access Logs Tab -->
+            <div id="logsTab">
+                <h3 class="card-title" style="margin-bottom: 1rem;">Access Logs</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Timestamp</th>
+                                <th>Location Anomaly</th>
+                                <th>Keystroke Anomaly</th>
+                                <th>Session Time</th>
+                                <th>Unusual Time</th>
+                                <th>Total Risk</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="9" style="text-align: center; color: var(--text-muted);">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="usersTab" class="hidden">
+                <h3 class="card-title" style="margin-bottom: 1rem;">Registered Users</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Registered</th>
+                                <th>Files</th>
+                                <th>Storage</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: var(--text-muted);">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Feedback Tab -->
+            <div id="feedbackTab" class="hidden">
+                <h3 class="card-title" style="margin-bottom: 1rem;">User Feedback</h3>
+                <div id="feedbackList">
+                    <p style="text-align: center; color: var(--text-muted);">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="hidden">
+                <h3 class="card-title" style="margin-bottom: 1rem;">Usual Time Settings</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Configure time ranges that are considered usual for login attempts. Each hour difference adds 3
+                    points to the risk score (max 20).
+                </p>
+
+                <div id="timeRangesList" style="margin-bottom: 1.5rem;"></div>
+
+                <button class="btn btn-success" onclick="addTimeRange()">+ Add Time Range</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Range Modal -->
+    <div class="modal" id="timeRangeModal">
+        <div class="modal-content">
+            <h2 class="card-title">Add Usual Time Range</h2>
+
+            <form id="timeRangeForm" onsubmit="saveTimeRange(event)">
+                <div class="form-group">
+                    <label class="form-label">Start Time (HH:MM format, e.g., 04:30)</label>
+                    <input type="time" class="form-input" id="startTime" required>
+                    <small style="color: var(--text-muted); font-size: 0.85rem;">24-hour format</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">End Time (HH:MM format, e.g., 22:15)</label>
+                    <input type="time" class="form-input" id="endTime" required>
+                    <small style="color: var(--text-muted); font-size: 0.85rem;">24-hour format</small>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;"
+                        onclick="closeTimeRangeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+
+</html>

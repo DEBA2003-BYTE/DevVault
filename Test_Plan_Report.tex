@@ -1,0 +1,1696 @@
+\documentclass[12pt,a4paper]{report}
+
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{lipsum}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{geometry}
+
+\geometry{margin=1in}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue
+}
+
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\begin{document}
+
+% =============================================================
+% TITLE PAGE
+% =============================================================
+\begin{titlepage}
+\centering
+{\Large\bfseries SIDDAGANGA INSTITUTE OF TECHNOLOGY, TUMKUR}\\[4pt]
+{\small (An Autonomous Institute under VTU, Belagavi)}\\[12pt]
+
+\includegraphics[width=0.23\linewidth]{SIT-logo.jpg}\\[14pt]
+
+{\Huge\bfseries SOFTWARE TEST PLAN}\\[8pt]
+{\Large\bfseries ACTIVITY BASED LEARNING}\\[25pt]
+
+{\Large\bfseries Project Title:}\\[8pt]
+{\large Efficient and Privacy-Preserving Data Sharing Framework for Cloud Environments with Fine-Grained Access Control}\\[20pt]
+
+\textbf{Submitted to:}\\
+{\large\bfseries Dr. T. M. Kiran Kumar}\\
+Assistant Professor,\\
+Department of Computer Science and Engineering\\[12pt]
+
+\textbf{Submitted By:}\\
+{\large
+Debarghya Pramanik (1SI23CS042)\\
+Ravi Shukla (1SI23CS146)\\
+Shikhar Shrourya (1SI23CS166)\\
+Yuvraj Singh (1SI23CS207)}\\[170pt]
+
+\textbf{Academic Year 2025--26}
+
+\end{titlepage}
+
+% =============================================================
+% TABLE OF CONTENTS
+% =============================================================
+\tableofcontents
+\newpage
+
+% =============================================================
+% CHAPTER 1: TEST PLAN IDENTIFIER
+% =============================================================
+\chapter{Test Plan Identifier}
+
+\section{Document Information}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Test Plan ID} & STP-DPDSF-2025-V1.0 \\
+\hline
+\textbf{Project Name} & Efficient and Privacy-Preserving Data Sharing Framework for Cloud Environments with Fine-Grained Access Control \\
+\hline
+\textbf{Version} & 1.0 \\
+\hline
+\textbf{Date} & December 10, 2025 \\
+\hline
+\textbf{Status} & Draft \\
+\hline
+\textbf{Prepared By} & Debarghya Pramanik, Ravi Shukla, Shikhar Shrourya, Yuvraj Singh \\
+\hline
+\textbf{Reviewed By} & Dr. T. M. Kiran Kumar \\
+\hline
+\end{tabular}
+
+\section{Version History}
+\begin{tabular}{|c|c|p{6cm}|p{3cm}|}
+\hline
+\textbf{Version} & \textbf{Date} & \textbf{Description} & \textbf{Author} \\
+\hline
+1.0 & 10-Dec-2025 & Initial Test Plan Document & Team \\
+\hline
+\end{tabular}
+
+% =============================================================
+% CHAPTER 2: INTRODUCTION
+% =============================================================
+\chapter{Introduction}
+
+\section{Purpose}
+This Software Test Plan (STP) document describes the comprehensive testing strategy, approach, resources, and schedule for testing the "Efficient and Privacy-Preserving Data Sharing Framework for Cloud Environments with Fine-Grained Access Control" system. This document follows the IEEE 829-1983 Standard for Software Test Documentation.
+
+\section{Scope}
+The scope of this test plan covers:
+\begin{itemize}
+    \item User authentication and authorization mechanisms
+    \item Risk-based access control system
+    \item Multi-factor authentication (MFA) functionality
+    \item File upload, download, and sharing capabilities
+    \item Admin dashboard and user management
+    \item Location-based anomaly detection
+    \item Keystroke dynamics analysis
+    \item Email notification system
+    \item AWS S3 integration for secure file storage
+    \item MongoDB database operations
+\end{itemize}
+
+\section{System Overview}
+The system is a cloud-based data sharing platform that implements privacy-preserving mechanisms and fine-grained access control. It uses risk-based authentication to evaluate login attempts based on multiple factors including location, keystroke dynamics, session timing, and unusual access patterns. The system consists of:
+
+\begin{itemize}
+    \item \textbf{Frontend}: HTML5, CSS3, JavaScript (Vanilla)
+    \item \textbf{Backend}: Node.js, Express.js
+    \item \textbf{Database}: MongoDB Atlas
+    \item \textbf{Storage}: AWS S3
+    \item \textbf{Email Service}: Nodemailer with SMTP
+\end{itemize}
+
+\section{Objectives}
+\begin{enumerate}
+    \item Verify all functional requirements are implemented correctly
+    \item Validate security mechanisms and access control
+    \item Ensure system performance meets acceptable standards
+    \item Identify and document defects
+    \item Validate user experience and interface usability
+    \item Ensure data privacy and encryption standards
+\end{enumerate}
+
+\section{References}
+\begin{itemize}
+    \item IEEE 829-1983 Standard for Software Test Documentation
+    \item System Requirements Specification (SRS) Document
+    \item System Architecture Document
+    \item User Manual
+    \item API Documentation
+\end{itemize}
+
+% =============================================================
+% CHAPTER 3: TEST ITEMS
+% =============================================================
+\chapter{Test Items}
+
+The following components and modules will be tested:
+
+\section{Authentication Module}
+\begin{itemize}
+    \item User Registration (POST /api/auth/register)
+    \item User Login (POST /api/auth/login)
+    \item MFA Verification (POST /api/auth/verify-mfa)
+    \item Password Reset (POST /api/auth/forgot-password)
+    \item JWT Token Generation and Validation
+\end{itemize}
+
+\section{Risk Assessment Engine}
+\begin{itemize}
+    \item Location Anomaly Detection (Haversine Distance Calculation)
+    \item Keystroke Dynamics Analysis
+    \item Session Time Evaluation
+    \item Unusual Time Detection
+    \item Risk Score Calculation (0-100 scale)
+    \item Action Determination (Grant/MFA/Block)
+\end{itemize}
+
+\section{User Management Module}
+\begin{itemize}
+    \item User Profile Retrieval (GET /api/user/profile)
+    \item MFA Settings Update (PUT /api/user/mfa)
+    \item Password Change (PUT /api/user/reset-password)
+    \item User Statistics (GET /api/user/stats)
+\end{itemize}
+
+\section{File Management Module}
+\begin{itemize}
+    \item File Upload to S3 (POST /api/user/upload)
+    \item File Download from S3 (GET /api/user/files/:id/download)
+    \item File Listing (GET /api/user/files)
+    \item File Sharing (POST /api/user/files/:id/share)
+    \item File Deletion (DELETE /api/user/files/:id)
+    \item Shared Files Access (GET /api/user/shared-files)
+\end{itemize}
+
+\section{Admin Module}
+\begin{itemize}
+    \item User Management (GET /api/admin/users)
+    \item Access Logs Viewing (GET /api/admin/access-logs)
+    \item User Blocking/Unblocking (PUT /api/admin/users/:id/block)
+    \item User Deletion (DELETE /api/admin/users/:id)
+    \item System Statistics (GET /api/admin/stats)
+    \item Unusual Time Configuration (PUT /api/admin/settings/unusual-time)
+    \item Feedback Management (GET /api/admin/feedback)
+\end{itemize}
+
+\section{Email Notification System}
+\begin{itemize}
+    \item OTP Email Delivery
+    \item High Risk Warning Email
+    \item Account Blocked Notification
+    \item Password Reset Email
+\end{itemize}
+
+\section{Database Operations}
+\begin{itemize}
+    \item User Collection CRUD Operations
+    \item File Collection CRUD Operations
+    \item AccessLog Collection Operations
+    \item AdminSettings Collection Operations
+    \item Feedback Collection Operations
+\end{itemize}
+
+\section{Frontend Components}
+\begin{itemize}
+    \item Login/Registration Forms
+    \item User Dashboard
+    \item Admin Dashboard
+    \item File Upload Interface
+    \item MFA Input Interface
+    \item Location Capture (GPS)
+    \item Keystroke Tracking
+\end{itemize}
+
+% =============================================================
+% CHAPTER 4: FEATURES TO BE TESTED
+% =============================================================
+\chapter{Features to be Tested}
+
+\section{Functional Features}
+
+\subsection{Authentication and Authorization}
+\begin{enumerate}
+    \item User registration with location capture
+    \item User login with credential validation
+    \item Risk-based access control decision making
+    \item Multi-factor authentication (Email OTP)
+    \item Password hashing using bcrypt
+    \item JWT token generation and expiration
+    \item Admin authentication with hardcoded credentials
+    \item Session management
+\end{enumerate}
+
+\subsection{Risk Assessment}
+\begin{enumerate}
+    \item Location-based anomaly detection (20 points max)
+    \item Keystroke dynamics analysis (30 points max)
+    \item Session time evaluation (30 points max)
+    \item Unusual time detection (20 points max)
+    \item Risk score aggregation (0-100 scale)
+    \item Three-tier action system:
+    \begin{itemize}
+        \item Low Risk (0-40): Grant Access
+        \item Medium Risk (41-70): Require MFA
+        \item High Risk (71-100): Block Account
+    \end{itemize}
+\end{enumerate}
+
+\subsection{File Management}
+\begin{enumerate}
+    \item File upload to AWS S3
+    \item File download with authentication
+    \item File sharing between users
+    \item File deletion with cascade cleanup
+    \item File metadata storage in MongoDB
+    \item Storage quota tracking
+    \item File access logging
+\end{enumerate}
+
+\subsection{User Management}
+\begin{enumerate}
+    \item User profile viewing and editing
+    \item MFA email configuration
+    \item Password reset functionality
+    \item User statistics display
+    \item Account blocking (temporary and permanent)
+    \item User feedback submission
+\end{enumerate}
+
+\subsection{Admin Features}
+\begin{enumerate}
+    \item View all users and their details
+    \item View access logs with risk scores
+    \item Block/unblock user accounts
+    \item Delete users with file cleanup
+    \item Configure unusual time ranges
+    \item View system statistics
+    \item Manage user feedback
+\end{enumerate}
+
+\section{Non-Functional Features}
+
+\subsection{Security}
+\begin{enumerate}
+    \item Password encryption (bcrypt)
+    \item JWT token security
+    \item CORS configuration
+    \item SQL injection prevention
+    \item XSS protection
+    \item File upload validation
+    \item Access control enforcement
+\end{enumerate}
+
+\subsection{Performance}
+\begin{enumerate}
+    \item API response time (< 2 seconds)
+    \item File upload speed
+    \item Database query optimization
+    \item Concurrent user handling
+    \item Memory usage optimization
+\end{enumerate}
+
+\subsection{Usability}
+\begin{enumerate}
+    \item User interface responsiveness
+    \item Error message clarity
+    \item Navigation flow
+    \item Form validation feedback
+    \item Loading indicators
+\end{enumerate}
+
+\subsection{Reliability}
+\begin{enumerate}
+    \item System uptime
+    \item Error handling
+    \item Data consistency
+    \item Backup and recovery
+\end{enumerate}
+
+% =============================================================
+% CHAPTER 5: FEATURES NOT TO BE TESTED
+% =============================================================
+\chapter{Features not to be Tested}
+
+The following features/components are explicitly excluded from this test plan:
+
+\section{Third-Party Services}
+\begin{enumerate}
+    \item AWS S3 internal operations (assumed to be reliable)
+    \item MongoDB Atlas infrastructure
+    \item Email SMTP server functionality
+    \item GPS/Geolocation API accuracy
+    \item Browser-specific implementations
+\end{enumerate}
+
+\section{External Dependencies}
+\begin{enumerate}
+    \item Node.js runtime environment
+    \item npm package manager
+    \item Operating system compatibility
+    \item Network infrastructure
+    \item Internet connectivity
+\end{enumerate}
+
+\section{Out-of-Scope Features}
+\begin{enumerate}
+    \item Mobile application (if not implemented)
+    \item Real-time notifications (WebSockets)
+    \item Advanced analytics and reporting
+    \item Machine learning model training
+    \item Blockchain integration
+    \item Biometric authentication (if not implemented)
+    \item SMS-based OTP
+    \item Social media login integration
+\end{enumerate}
+
+\section{Known Limitations}
+\begin{enumerate}
+    \item In-memory OTP storage (acknowledged limitation)
+    \item Single server deployment
+    \item HTTP (non-HTTPS) local testing
+    \item Browser compatibility beyond Chrome/Firefox/Safari
+\end{enumerate}
+
+\section{Future Enhancements}
+\begin{enumerate}
+    \item Redis implementation for OTP storage
+    \item Load balancing and horizontal scaling
+    \item Advanced machine learning risk models
+    \item Real-time collaboration features
+    \item Version control for files
+\end{enumerate}
+
+% =============================================================
+% CHAPTER 6: APPROACH
+% =============================================================
+\chapter{Approach}
+
+\section{Testing Strategy}
+
+\subsection{Testing Levels}
+\begin{enumerate}
+    \item \textbf{Unit Testing}: Individual functions and modules
+    \item \textbf{Integration Testing}: Module interactions and API endpoints
+    \item \textbf{System Testing}: Complete system functionality
+    \item \textbf{Acceptance Testing}: User requirements validation
+\end{enumerate}
+
+\subsection{Testing Types}
+
+\subsubsection{Functional Testing}
+\begin{itemize}
+    \item Black-box testing of all features
+    \item Boundary value analysis
+    \item Equivalence partitioning
+    \item Decision table testing
+\end{itemize}
+
+\subsubsection{Security Testing}
+\begin{itemize}
+    \item Authentication bypass attempts
+    \item Authorization testing
+    \item SQL injection testing
+    \item XSS vulnerability testing
+    \item CSRF protection validation
+    \item Password strength testing
+    \item Session hijacking prevention
+\end{itemize}
+
+\subsubsection{Performance Testing}
+\begin{itemize}
+    \item Load testing (100 concurrent users)
+    \item Stress testing (peak load scenarios)
+    \item Response time measurement
+    \item Database query performance
+    \item File upload/download speed
+\end{itemize}
+
+\subsubsection{Usability Testing}
+\begin{itemize}
+    \item User interface evaluation
+    \item Navigation testing
+    \item Error message validation
+    \item Accessibility testing
+\end{itemize}
+
+\subsubsection{Compatibility Testing}
+\begin{itemize}
+    \item Browser compatibility (Chrome, Firefox, Safari, Edge)
+    \item Screen resolution testing
+    \item Mobile responsiveness
+\end{itemize}
+
+\section{Testing Tools}
+
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Tool} & \textbf{Purpose} \\
+\hline
+Postman & API testing and documentation \\
+\hline
+Jest & Unit testing framework \\
+\hline
+Mocha/Chai & Integration testing \\
+\hline
+JMeter & Performance and load testing \\
+\hline
+OWASP ZAP & Security vulnerability scanning \\
+\hline
+Chrome DevTools & Frontend debugging and network analysis \\
+\hline
+MongoDB Compass & Database testing and query analysis \\
+\hline
+AWS S3 Console & File storage verification \\
+\hline
+Selenium & Automated UI testing \\
+\hline
+ESLint & Code quality analysis \\
+\hline
+\end{tabular}
+
+\section{Test Data Management}
+\begin{itemize}
+    \item Create test user accounts with various roles
+    \item Prepare sample files for upload testing
+    \item Generate mock GPS coordinates
+    \item Create test access logs
+    \item Prepare edge case scenarios
+\end{itemize}
+
+\section{Defect Management}
+\begin{itemize}
+    \item Use GitHub Issues for defect tracking
+    \item Classify defects by severity (Critical, High, Medium, Low)
+    \item Assign priority levels (P0, P1, P2, P3)
+    \item Document reproduction steps
+    \item Track defect lifecycle (Open → In Progress → Fixed → Verified → Closed)
+\end{itemize}
+
+% =============================================================
+% CHAPTER 7: PASS/FAIL CRITERIA
+% =============================================================
+\chapter{Pass/Fail Criteria}
+
+\section{Entry Criteria}
+Testing can begin when:
+\begin{enumerate}
+    \item All modules are code-complete
+    \item Development environment is set up
+    \item Test environment is configured
+    \item Test data is prepared
+    \item Test cases are reviewed and approved
+    \item Unit testing is completed with >80\% code coverage
+\end{enumerate}
+
+\section{Exit Criteria}
+Testing is considered complete when:
+\begin{enumerate}
+    \item All planned test cases are executed
+    \item 95\% of test cases pass successfully
+    \item All critical and high-priority defects are fixed
+    \item No open P0 or P1 defects
+    \item Performance benchmarks are met
+    \item Security vulnerabilities are addressed
+    \item Test summary report is approved
+\end{enumerate}
+
+\section{Pass Criteria}
+
+\subsection{Functional Pass Criteria}
+\begin{itemize}
+    \item All authentication flows work correctly
+    \item Risk assessment produces accurate scores
+    \item File operations complete successfully
+    \item Admin functions operate as expected
+    \item Email notifications are delivered
+    \item Database operations maintain data integrity
+\end{itemize}
+
+\subsection{Performance Pass Criteria}
+\begin{itemize}
+    \item API response time < 2 seconds (95th percentile)
+    \item File upload speed > 1 MB/s
+    \item System supports 100 concurrent users
+    \item Database queries execute in < 500ms
+    \item Page load time < 3 seconds
+\end{itemize}
+
+\subsection{Security Pass Criteria}
+\begin{itemize}
+    \item No SQL injection vulnerabilities
+    \item No XSS vulnerabilities
+    \item Passwords properly hashed
+    \item JWT tokens properly validated
+    \item Access control enforced correctly
+    \item No sensitive data in logs
+\end{itemize}
+
+\section{Fail Criteria}
+Testing fails if:
+\begin{enumerate}
+    \item Critical functionality is broken
+    \item Security vulnerabilities are discovered
+    \item Data loss or corruption occurs
+    \item System crashes or becomes unresponsive
+    \item Performance is significantly degraded
+    \item More than 10\% of test cases fail
+    \item Any P0 defect remains open
+\end{enumerate}
+
+\section{Suspension Criteria}
+Testing will be suspended if:
+\begin{enumerate}
+    \item Critical defects block further testing
+    \item Test environment becomes unavailable
+    \item Major code changes are introduced
+    \item Database corruption occurs
+    \item AWS S3 service is unavailable
+\end{enumerate}
+
+\section{Resumption Criteria}
+Testing can resume when:
+\begin{enumerate}
+    \item Blocking defects are fixed
+    \item Test environment is restored
+    \item Code changes are deployed and stabilized
+    \item Database is recovered
+    \item External services are available
+\end{enumerate}
+
+% =============================================================
+% CHAPTER 8: SUSPENSION AND RESUMPTION
+% =============================================================
+\chapter{Suspension and Resumption}
+
+\section{Suspension Criteria}
+Testing activities will be suspended under the following conditions:
+
+\subsection{Critical Defects}
+\begin{itemize}
+    \item Authentication system completely broken
+    \item Database connection failures
+    \item AWS S3 integration failure
+    \item Server crashes on startup
+    \item Data corruption issues
+\end{itemize}
+
+\subsection{Environment Issues}
+\begin{itemize}
+    \item Test server unavailable
+    \item MongoDB Atlas connection lost
+    \item AWS credentials expired
+    \item Email service down
+    \item Network connectivity issues
+\end{itemize}
+
+\subsection{Resource Constraints}
+\begin{itemize}
+    \item Key testing personnel unavailable
+    \item Test data corrupted or lost
+    \item Testing tools malfunction
+    \item Budget or time constraints
+\end{itemize}
+
+\section{Resumption Requirements}
+
+\subsection{Defect Resolution}
+\begin{enumerate}
+    \item All blocking defects must be fixed
+    \item Fixes must be verified in development environment
+    \item Regression testing must be planned
+    \item Test cases must be updated if needed
+\end{enumerate}
+
+\subsection{Environment Restoration}
+\begin{enumerate}
+    \item Test environment fully operational
+    \item All services (MongoDB, S3, Email) accessible
+    \item Test data restored or recreated
+    \item Configuration verified
+\end{enumerate}
+
+\subsection{Approval Process}
+\begin{enumerate}
+    \item Test lead approval to resume
+    \item Stakeholder notification
+    \item Updated test schedule communicated
+    \item Risk assessment performed
+\end{enumerate}
+
+\section{Impact Assessment}
+When testing is suspended:
+\begin{itemize}
+    \item Document the reason for suspension
+    \item Estimate impact on schedule
+    \item Identify affected test cases
+    \item Communicate to stakeholders
+    \item Plan mitigation strategies
+\end{itemize}
+
+% =============================================================
+% CHAPTER 9: TEST DELIVERABLES
+% =============================================================
+\chapter{Test Deliverables}
+
+\section{Before Testing}
+\begin{enumerate}
+    \item \textbf{Test Plan Document} (This document)
+    \item \textbf{Test Case Specifications}
+    \begin{itemize}
+        \item Authentication test cases
+        \item Risk assessment test cases
+        \item File management test cases
+        \item Admin functionality test cases
+        \item Security test cases
+    \end{itemize}
+    \item \textbf{Test Data Sets}
+    \begin{itemize}
+        \item User credentials
+        \item Sample files
+        \item GPS coordinates
+        \item Mock access logs
+    \end{itemize}
+    \item \textbf{Test Environment Setup Guide}
+\end{enumerate}
+
+\section{During Testing}
+\begin{enumerate}
+    \item \textbf{Test Execution Logs}
+    \item \textbf{Defect Reports}
+    \begin{itemize}
+        \item Defect ID
+        \item Description
+        \item Severity and priority
+        \item Steps to reproduce
+        \item Screenshots/logs
+        \item Status
+    \end{itemize}
+    \item \textbf{Test Progress Reports} (Weekly)
+    \item \textbf{Test Metrics Dashboard}
+    \begin{itemize}
+        \item Test cases executed
+        \item Pass/fail rate
+        \item Defect density
+        \item Code coverage
+    \end{itemize}
+\end{enumerate}
+
+\section{After Testing}
+\begin{enumerate}
+    \item \textbf{Test Summary Report}
+    \begin{itemize}
+        \item Executive summary
+        \item Test coverage analysis
+        \item Defect summary
+        \item Risk analysis
+        \item Recommendations
+    \end{itemize}
+    \item \textbf{Test Metrics Report}
+    \begin{itemize}
+        \item Total test cases: Planned vs Executed
+        \item Pass/fail statistics
+        \item Defect distribution by severity
+        \item Code coverage percentage
+        \item Performance benchmarks
+    \end{itemize}
+    \item \textbf{Defect Analysis Report}
+    \begin{itemize}
+        \item Defects by module
+        \item Defects by severity
+        \item Root cause analysis
+        \item Trends and patterns
+    \end{itemize}
+    \item \textbf{Test Closure Report}
+    \item \textbf{Lessons Learned Document}
+    \item \textbf{Updated Test Cases} (for regression)
+\end{enumerate}
+
+\section{Documentation Standards}
+All deliverables will follow:
+\begin{itemize}
+    \item IEEE 829-1983 standard format
+    \item Consistent naming conventions
+    \item Version control
+    \item Review and approval process
+    \item Proper archival and storage
+\end{itemize}
+
+% =============================================================
+% CHAPTER 10: TESTING TASKS
+% =============================================================
+\chapter{Testing Tasks}
+
+\section{Test Planning Phase}
+\begin{enumerate}
+    \item Review system requirements and architecture
+    \item Identify test items and features
+    \item Define test strategy and approach
+    \item Prepare test plan document
+    \item Get test plan approved
+    \item Estimated Duration: 1 week
+\end{enumerate}
+
+\section{Test Design Phase}
+\begin{enumerate}
+    \item Design test cases for authentication module
+    \item Design test cases for risk assessment engine
+    \item Design test cases for file management
+    \item Design test cases for admin functionality
+    \item Design security test scenarios
+    \item Design performance test scenarios
+    \item Create test data sets
+    \item Review and approve test cases
+    \item Estimated Duration: 2 weeks
+\end{enumerate}
+
+\section{Test Environment Setup}
+\begin{enumerate}
+    \item Set up test server (Node.js, MongoDB)
+    \item Configure AWS S3 test bucket
+    \item Set up email testing (Mailtrap/similar)
+    \item Install testing tools (Postman, Jest, JMeter)
+    \item Configure test database
+    \item Prepare test user accounts
+    \item Verify environment readiness
+    \item Estimated Duration: 3 days
+\end{enumerate}
+
+\section{Test Execution Phase}
+
+\subsection{Unit Testing}
+\begin{enumerate}
+    \item Test utility functions (risk calculator, email service)
+    \item Test middleware (authentication, authorization)
+    \item Test database models
+    \item Estimated Duration: 1 week
+\end{enumerate}
+
+\subsection{Integration Testing}
+\begin{enumerate}
+    \item Test authentication API endpoints
+    \item Test user management API endpoints
+    \item Test file management API endpoints
+    \item Test admin API endpoints
+    \item Test database integration
+    \item Test S3 integration
+    \item Test email integration
+    \item Estimated Duration: 2 weeks
+\end{enumerate}
+
+\subsection{System Testing}
+\begin{enumerate}
+    \item Execute end-to-end user workflows
+    \item Test complete authentication flow
+    \item Test file upload/download/share workflow
+    \item Test admin workflows
+    \item Test error handling and edge cases
+    \item Estimated Duration: 1 week
+\end{enumerate}
+
+\subsection{Security Testing}
+\begin{enumerate}
+    \item Perform penetration testing
+    \item Test authentication bypass scenarios
+    \item Test SQL injection vulnerabilities
+    \item Test XSS vulnerabilities
+    \item Test CSRF protection
+    \item Validate encryption and hashing
+    \item Estimated Duration: 1 week
+\end{enumerate}
+
+\subsection{Performance Testing}
+\begin{enumerate}
+    \item Execute load tests (100 concurrent users)
+    \item Execute stress tests
+    \item Measure API response times
+    \item Test file upload/download performance
+    \item Test database query performance
+    \item Estimated Duration: 3 days
+\end{enumerate}
+
+\subsection{Usability Testing}
+\begin{enumerate}
+    \item Test user interface responsiveness
+    \item Test navigation flows
+    \item Test error messages and feedback
+    \item Conduct user acceptance testing
+    \item Estimated Duration: 2 days
+\end{enumerate}
+
+\section{Defect Management}
+\begin{enumerate}
+    \item Log defects in tracking system
+    \item Classify and prioritize defects
+    \item Assign defects to developers
+    \item Verify defect fixes
+    \item Perform regression testing
+    \item Ongoing throughout testing phase
+\end{enumerate}
+
+\section{Test Reporting}
+\begin{enumerate}
+    \item Generate daily test execution reports
+    \item Prepare weekly progress reports
+    \item Create test metrics dashboard
+    \item Prepare final test summary report
+    \item Conduct test closure meeting
+    \item Estimated Duration: Ongoing + 2 days for final report
+\end{enumerate}
+
+% =============================================================
+% CHAPTER 11: ENVIRONMENTAL NEEDS
+% =============================================================
+\chapter{Environmental Needs}
+
+\section{Hardware Requirements}
+
+\subsection{Test Server}
+\begin{itemize}
+    \item Processor: Intel Core i5 or equivalent (minimum)
+    \item RAM: 8 GB (minimum), 16 GB (recommended)
+    \item Storage: 50 GB SSD
+    \item Network: 100 Mbps internet connection
+\end{itemize}
+
+\subsection{Client Machines}
+\begin{itemize}
+    \item Processor: Intel Core i3 or equivalent
+    \item RAM: 4 GB minimum
+    \item Storage: 20 GB available space
+    \item Display: 1920x1080 resolution
+    \item Network: Stable internet connection
+\end{itemize}
+
+\section{Software Requirements}
+
+\subsection{Backend Environment}
+\begin{itemize}
+    \item Operating System: Ubuntu 20.04 LTS or macOS
+    \item Node.js: v18.x or higher
+    \item npm: v9.x or higher
+    \item MongoDB: v7.0 or higher
+    \item Git: v2.x
+\end{itemize}
+
+\subsection{Testing Tools}
+\begin{itemize}
+    \item Postman: Latest version
+    \item Jest: v29.x
+    \item Mocha: v10.x
+    \item Chai: v4.x
+    \item Apache JMeter: v5.5
+    \item OWASP ZAP: v2.12
+    \item Selenium WebDriver: v4.x
+    \item Chrome DevTools: Built-in
+\end{itemize}
+
+\subsection{Browsers}
+\begin{itemize}
+    \item Google Chrome: Latest version
+    \item Mozilla Firefox: Latest version
+    \item Safari: Latest version (for macOS)
+    \item Microsoft Edge: Latest version
+\end{itemize}
+
+\section{Cloud Services}
+
+\subsection{MongoDB Atlas}
+\begin{itemize}
+    \item Cluster: M0 (Free tier) or higher
+    \item Region: Nearest to test location
+    \item Database: Test database separate from production
+\end{itemize}
+
+\subsection{AWS S3}
+\begin{itemize}
+    \item Bucket: Dedicated test bucket
+    \item Region: us-east-1 or nearest
+    \item Access: IAM credentials for testing
+    \item Storage: 10 GB allocated for testing
+\end{itemize}
+
+\subsection{Email Service}
+\begin{itemize}
+    \item SMTP Server: Mailtrap or similar test service
+    \item Credentials: Test account credentials
+\end{itemize}
+
+\section{Network Requirements}
+\begin{itemize}
+    \item Stable internet connection (minimum 10 Mbps)
+    \item Access to MongoDB Atlas (port 27017)
+    \item Access to AWS S3 (HTTPS)
+    \item Access to SMTP server (port 587)
+    \item Firewall configured to allow testing traffic
+\end{itemize}
+
+\section{Test Data}
+\begin{itemize}
+    \item 50+ test user accounts
+    \item 100+ sample files (various types and sizes)
+    \item Mock GPS coordinates (10+ locations)
+    \item Test access logs (500+ entries)
+    \item Admin test account
+\end{itemize}
+
+\section{Security Requirements}
+\begin{itemize}
+    \item Isolated test environment
+    \item Separate test database
+    \item Test AWS credentials (not production)
+    \item VPN access (if required)
+    \item Secure storage for test credentials
+\end{itemize}
+
+\section{Documentation}
+\begin{itemize}
+    \item System architecture documentation
+    \item API documentation
+    \item Database schema documentation
+    \item Environment setup guide
+    \item Test data documentation
+\end{itemize}
+
+% =============================================================
+% CHAPTER 12: RESPONSIBILITIES
+% =============================================================
+\chapter{Responsibilities}
+
+\section{Test Team Structure}
+
+\subsection{Test Lead}
+\textbf{Name}: Debarghya Pramanik\\
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item Overall test planning and coordination
+    \item Test strategy definition
+    \item Resource allocation
+    \item Stakeholder communication
+    \item Test progress monitoring
+    \item Risk management
+    \item Final test report approval
+\end{itemize}
+
+\subsection{Test Engineers}
+
+\subsubsection{Backend Testing}
+\textbf{Name}: Ravi Shukla\\
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item API testing (Postman)
+    \item Backend unit testing (Jest)
+    \item Database testing
+    \item Integration testing
+    \item Security testing
+    \item Performance testing
+\end{itemize}
+
+\subsubsection{Frontend Testing}
+\textbf{Name}: Shikhar Shrourya\\
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item UI/UX testing
+    \item Browser compatibility testing
+    \item Frontend functionality testing
+    \item Usability testing
+    \item Accessibility testing
+    \item Selenium automation
+\end{itemize}
+
+\subsubsection{System Testing}
+\textbf{Name}: Yuvraj Singh\\
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item End-to-end testing
+    \item Integration testing
+    \item Risk assessment testing
+    \item File management testing
+    \item Admin functionality testing
+    \item Regression testing
+\end{itemize}
+
+\section{Development Team}
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item Fix reported defects
+    \item Provide technical support to testers
+    \item Unit testing before handoff
+    \item Code reviews
+    \item Environment setup assistance
+\end{itemize}
+
+\section{Project Supervisor}
+\textbf{Name}: Dr. T. M. Kiran Kumar\\
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item Review and approve test plan
+    \item Provide guidance and mentorship
+    \item Review test reports
+    \item Final acceptance approval
+    \item Academic evaluation
+\end{itemize}
+
+\section{Stakeholders}
+\textbf{Responsibilities}:
+\begin{itemize}
+    \item Provide requirements clarification
+    \item Review test deliverables
+    \item Participate in UAT
+    \item Provide feedback
+    \item Sign-off on test completion
+\end{itemize}
+
+\section{Responsibility Matrix}
+
+\begin{longtable}{|p{4cm}|c|c|c|c|}
+\hline
+\textbf{Activity} & \textbf{Test Lead} & \textbf{Backend} & \textbf{Frontend} & \textbf{System} \\
+\hline
+Test Planning & R & C & C & C \\
+\hline
+Test Case Design & A & R & R & R \\
+\hline
+Environment Setup & A & R & R & R \\
+\hline
+API Testing & A & R & C & C \\
+\hline
+UI Testing & A & C & R & C \\
+\hline
+Security Testing & A & R & C & C \\
+\hline
+Performance Testing & A & R & C & R \\
+\hline
+Defect Reporting & A & R & R & R \\
+\hline
+Test Reporting & R & C & C & C \\
+\hline
+Test Closure & R & C & C & C \\
+\hline
+\multicolumn{5}{l}{\small R = Responsible, A = Accountable, C = Consulted} \\
+\hline
+\end{longtable}
+
+% =============================================================
+% CHAPTER 13: STAFFING AND TRAINING
+% =============================================================
+\chapter{Staffing and Training}
+
+\section{Staffing Requirements}
+
+\subsection{Team Composition}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Role} & \textbf{Count} & \textbf{Allocation} \\
+\hline
+Test Lead & 1 & 100\% \\
+\hline
+Backend Test Engineer & 1 & 100\% \\
+\hline
+Frontend Test Engineer & 1 & 100\% \\
+\hline
+System Test Engineer & 1 & 100\% \\
+\hline
+\textbf{Total} & \textbf{4} & \\
+\hline
+\end{tabular}
+
+\subsection{Skills Required}
+
+\subsubsection{Technical Skills}
+\begin{itemize}
+    \item JavaScript/Node.js programming
+    \item REST API testing
+    \item Database testing (MongoDB)
+    \item Security testing fundamentals
+    \item Performance testing
+    \item Test automation (Selenium, Jest)
+    \item Version control (Git)
+\end{itemize}
+
+\subsubsection{Domain Knowledge}
+\begin{itemize}
+    \item Cloud computing concepts
+    \item Authentication and authorization
+    \item Risk-based access control
+    \item File storage systems
+    \item Email systems
+\end{itemize}
+
+\subsubsection{Soft Skills}
+\begin{itemize}
+    \item Analytical thinking
+    \item Attention to detail
+    \item Communication skills
+    \item Problem-solving
+    \item Time management
+    \item Teamwork
+\end{itemize}
+
+\section{Training Plan}
+
+\subsection{Tool Training}
+
+\subsubsection{Postman Training}
+\begin{itemize}
+    \item Duration: 1 day
+    \item Topics: API testing, collections, environments, automation
+    \item Participants: All team members
+\end{itemize}
+
+\subsubsection{Jest/Mocha Training}
+\begin{itemize}
+    \item Duration: 2 days
+    \item Topics: Unit testing, mocking, assertions, coverage
+    \item Participants: Backend and System testers
+\end{itemize}
+
+\subsubsection{JMeter Training}
+\begin{itemize}
+    \item Duration: 1 day
+    \item Topics: Load testing, performance metrics, reporting
+    \item Participants: Backend and System testers
+\end{itemize}
+
+\subsubsection{Selenium Training}
+\begin{itemize}
+    \item Duration: 2 days
+    \item Topics: Web automation, locators, assertions, frameworks
+    \item Participants: Frontend tester
+\end{itemize}
+
+\subsubsection{OWASP ZAP Training}
+\begin{itemize}
+    \item Duration: 1 day
+    \item Topics: Security scanning, vulnerability assessment
+    \item Participants: Backend tester
+\end{itemize}
+
+\subsection{Domain Training}
+
+\subsubsection{System Architecture Overview}
+\begin{itemize}
+    \item Duration: 1 day
+    \item Topics: System components, data flow, integrations
+    \item Participants: All team members
+    \item Trainer: Development team
+\end{itemize}
+
+\subsubsection{Risk Assessment Logic}
+\begin{itemize}
+    \item Duration: 0.5 days
+    \item Topics: Risk factors, scoring, decision logic
+    \item Participants: All team members
+    \item Trainer: Test lead
+\end{itemize}
+
+\subsubsection{Security Best Practices}
+\begin{itemize}
+    \item Duration: 1 day
+    \item Topics: OWASP Top 10, secure coding, testing techniques
+    \item Participants: All team members
+    \item Trainer: External expert or online course
+\end{itemize}
+
+\subsection{Process Training}
+
+\subsubsection{IEEE 829 Standard}
+\begin{itemize}
+    \item Duration: 0.5 days
+    \item Topics: Test documentation standards
+    \item Participants: All team members
+\end{itemize}
+
+\subsubsection{Defect Management}
+\begin{itemize}
+    \item Duration: 0.5 days
+    \item Topics: Defect lifecycle, reporting, tracking
+    \item Participants: All team members
+\end{itemize}
+
+\section{Training Schedule}
+
+\begin{tabular}{|l|l|c|}
+\hline
+\textbf{Training} & \textbf{Week} & \textbf{Duration} \\
+\hline
+System Architecture Overview & Week 1 & 1 day \\
+\hline
+Postman Training & Week 1 & 1 day \\
+\hline
+Jest/Mocha Training & Week 1-2 & 2 days \\
+\hline
+Selenium Training & Week 2 & 2 days \\
+\hline
+JMeter Training & Week 2 & 1 day \\
+\hline
+OWASP ZAP Training & Week 2 & 1 day \\
+\hline
+Security Best Practices & Week 3 & 1 day \\
+\hline
+IEEE 829 \& Defect Management & Week 3 & 1 day \\
+\hline
+\end{tabular}
+
+\section{Knowledge Transfer}
+\begin{itemize}
+    \item Weekly team meetings for knowledge sharing
+    \item Documentation of testing procedures
+    \item Pair testing sessions
+    \item Code review sessions
+    \item Lessons learned discussions
+\end{itemize}
+
+% =============================================================
+% CHAPTER 14: SCHEDULE
+% =============================================================
+\chapter{Schedule}
+
+\section{Overall Timeline}
+\textbf{Total Duration}: 10 weeks\\
+\textbf{Start Date}: January 6, 2026\\
+\textbf{End Date}: March 16, 2026
+
+\section{Detailed Schedule}
+
+\subsection{Phase 1: Preparation (Weeks 1-3)}
+
+\subsubsection{Week 1: Planning and Setup}
+\begin{itemize}
+    \item Day 1-2: Review requirements and architecture
+    \item Day 3-4: Prepare test plan document
+    \item Day 5: Test plan review and approval
+    \item Day 6-7: Environment setup
+\end{itemize}
+
+\subsubsection{Week 2: Training}
+\begin{itemize}
+    \item Day 1-2: Tool training (Postman, Jest)
+    \item Day 3-4: Tool training (Selenium, JMeter)
+    \item Day 5: OWASP ZAP training
+    \item Day 6-7: Test case design begins
+\end{itemize}
+
+\subsubsection{Week 3: Test Design}
+\begin{itemize}
+    \item Day 1-3: Design authentication test cases
+    \item Day 4-5: Design file management test cases
+    \item Day 6-7: Design admin and security test cases
+\end{itemize}
+
+\subsection{Phase 2: Execution (Weeks 4-8)}
+
+\subsubsection{Week 4: Unit Testing}
+\begin{itemize}
+    \item Day 1-3: Backend unit tests
+    \item Day 4-5: Frontend unit tests
+    \item Day 6-7: Unit test review and fixes
+\end{itemize}
+
+\subsubsection{Week 5: Integration Testing (Part 1)}
+\begin{itemize}
+    \item Day 1-2: Authentication API testing
+    \item Day 3-4: User management API testing
+    \item Day 5-7: File management API testing
+\end{itemize}
+
+\subsubsection{Week 6: Integration Testing (Part 2)}
+\begin{itemize}
+    \item Day 1-2: Admin API testing
+    \item Day 3-4: Database integration testing
+    \item Day 5-7: External services integration testing
+\end{itemize}
+
+\subsubsection{Week 7: System and Security Testing}
+\begin{itemize}
+    \item Day 1-3: End-to-end workflow testing
+    \item Day 4-5: Security testing
+    \item Day 6-7: Penetration testing
+\end{itemize}
+
+\subsubsection{Week 8: Performance and Usability Testing}
+\begin{itemize}
+    \item Day 1-3: Performance testing (load, stress)
+    \item Day 4-5: Usability testing
+    \item Day 6-7: Compatibility testing
+\end{itemize}
+
+\subsection{Phase 3: Defect Resolution (Week 9)}
+\begin{itemize}
+    \item Day 1-3: Critical defect fixes
+    \item Day 4-5: High priority defect fixes
+    \item Day 6-7: Regression testing
+\end{itemize}
+
+\subsection{Phase 4: Closure (Week 10)}
+\begin{itemize}
+    \item Day 1-2: Final regression testing
+    \item Day 3-4: Test summary report preparation
+    \item Day 5: Test closure meeting
+    \item Day 6-7: Documentation and archival
+\end{itemize}
+
+\section{Milestones}
+
+\begin{longtable}{|c|l|l|}
+\hline
+\textbf{Week} & \textbf{Milestone} & \textbf{Deliverable} \\
+\hline
+1 & Test Plan Approved & Test Plan Document \\
+\hline
+3 & Test Cases Ready & Test Case Specifications \\
+\hline
+4 & Unit Testing Complete & Unit Test Report \\
+\hline
+6 & Integration Testing Complete & Integration Test Report \\
+\hline
+8 & System Testing Complete & System Test Report \\
+\hline
+9 & Defects Resolved & Defect Resolution Report \\
+\hline
+10 & Testing Complete & Test Summary Report \\
+\hline
+\end{longtable}
+
+\section{Dependencies}
+\begin{itemize}
+    \item Code completion by development team (Week 0)
+    \item Environment availability (Week 1)
+    \item Test data preparation (Week 2)
+    \item Defect fix turnaround time (< 2 days for critical)
+    \item Stakeholder availability for reviews
+\end{itemize}
+
+\section{Buffer Time}
+\begin{itemize}
+    \item 2 days buffer included in Week 9 for unexpected delays
+    \item Additional 1 week contingency if major issues arise
+\end{itemize}
+
+% =============================================================
+% CHAPTER 15: RISKS
+% =============================================================
+\chapter{Risks}
+
+\section{Technical Risks}
+
+\subsection{Risk 1: Environment Instability}
+\begin{itemize}
+    \item \textbf{Description}: Test environment may become unstable or unavailable
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: High
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Set up backup test environment
+        \item Regular environment health checks
+        \item Quick restoration procedures
+        \item Cloud-based environment for reliability
+    \end{itemize}
+\end{itemize}
+
+\subsection{Risk 2: Third-Party Service Failures}
+\begin{itemize}
+    \item \textbf{Description}: AWS S3, MongoDB Atlas, or email service may fail
+    \item \textbf{Probability}: Low
+    \item \textbf{Impact}: High
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Use mock services for critical tests
+        \item Monitor service status dashboards
+        \item Have fallback testing strategies
+        \item Schedule testing during off-peak hours
+    \end{itemize}
+\end{itemize}
+
+\subsection{Risk 3: In-Memory OTP Storage Limitation}
+\begin{itemize}
+    \item \textbf{Description}: OTPs lost on server restart during testing
+    \item \textbf{Probability}: High
+    \item \textbf{Impact}: Medium
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Avoid server restarts during OTP testing
+        \item Test OTP flow in single session
+        \item Document this known limitation
+        \item Consider implementing Redis for testing
+    \end{itemize}
+\end{itemize}
+
+\subsection{Risk 4: Performance Bottlenecks}
+\begin{itemize}
+    \item \textbf{Description}: System may not meet performance requirements
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: Medium
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Early performance testing
+        \item Identify bottlenecks proactively
+        \item Optimize database queries
+        \item Implement caching if needed
+    \end{itemize}
+\end{itemize}
+
+\section{Resource Risks}
+
+\subsection{Risk 5: Team Member Unavailability}
+\begin{itemize}
+    \item \textbf{Description}: Team members may be unavailable due to illness or other commitments
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: Medium
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Cross-training team members
+        \item Document all testing procedures
+        \item Maintain backup resource list
+        \item Flexible task allocation
+    \end{itemize}
+\end{itemize}
+
+\subsection{Risk 6: Insufficient Testing Tools}
+\begin{itemize}
+    \item \textbf{Description}: Testing tools may be inadequate or unavailable
+    \item \textbf{Probability}: Low
+    \item \textbf{Impact}: Medium
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Use open-source alternatives
+        \item Verify tool availability early
+        \item Budget for necessary tools
+        \item Manual testing as fallback
+    \end{itemize}
+\end{itemize}
+
+\section{Schedule Risks}
+
+\subsection{Risk 7: Delayed Code Delivery}
+\begin{itemize}
+    \item \textbf{Description}: Development may not complete on time
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: High
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Regular development progress tracking
+        \item Incremental testing approach
+        \item Flexible test schedule
+        \item Prioritize critical features
+    \end{itemize}
+\end{itemize}
+
+\subsection{Risk 8: Excessive Defects}
+\begin{itemize}
+    \item \textbf{Description}: Too many defects may delay testing
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: High
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Early defect detection
+        \item Prioritize critical defects
+        \item Parallel defect fixing and testing
+        \item Buffer time in schedule
+    \end{itemize}
+\end{itemize}
+
+\section{Security Risks}
+
+\subsection{Risk 9: Security Vulnerabilities}
+\begin{itemize}
+    \item \textbf{Description}: Critical security flaws may be discovered
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: Critical
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Early security testing
+        \item Use automated security scanners
+        \item Follow OWASP guidelines
+        \item Security code reviews
+    \end{itemize}
+\end{itemize}
+
+\subsection{Risk 10: Data Privacy Breach}
+\begin{itemize}
+    \item \textbf{Description}: Test data may be exposed or compromised
+    \item \textbf{Probability}: Low
+    \item \textbf{Impact}: High
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Use synthetic test data
+        \item Secure test environment
+        \item Access controls on test data
+        \item Regular security audits
+    \end{itemize}
+\end{itemize}
+
+\section{Communication Risks}
+
+\subsection{Risk 11: Requirement Misunderstanding}
+\begin{itemize}
+    \item \textbf{Description}: Test team may misunderstand requirements
+    \item \textbf{Probability}: Medium
+    \item \textbf{Impact}: Medium
+    \item \textbf{Mitigation}:
+    \begin{itemize}
+        \item Regular stakeholder meetings
+        \item Clear documentation
+        \item Requirement clarification sessions
+        \item Test case reviews
+    \end{itemize}
+\end{itemize}
+
+\section{Risk Matrix}
+
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Risk} & \textbf{Probability} & \textbf{Impact} & \textbf{Priority} \\
+\hline
+Environment Instability & Medium & High & High \\
+\hline
+Third-Party Failures & Low & High & Medium \\
+\hline
+OTP Storage Limitation & High & Medium & Medium \\
+\hline
+Performance Bottlenecks & Medium & Medium & Medium \\
+\hline
+Team Unavailability & Medium & Medium & Medium \\
+\hline
+Insufficient Tools & Low & Medium & Low \\
+\hline
+Delayed Code Delivery & Medium & High & High \\
+\hline
+Excessive Defects & Medium & High & High \\
+\hline
+Security Vulnerabilities & Medium & Critical & Critical \\
+\hline
+Data Privacy Breach & Low & High & Medium \\
+\hline
+Requirement Misunderstanding & Medium & Medium & Medium \\
+\hline
+\end{tabular}
+
+% =============================================================
+% CHAPTER 16: APPROVALS
+% =============================================================
+\chapter{Approvals}
+
+\section{Test Plan Approval}
+
+This Software Test Plan has been prepared in accordance with IEEE 829-1983 Standard for Software Test Documentation. The undersigned acknowledge that they have reviewed the test plan and agree with the approach and scope defined herein.
+
+\vspace{1cm}
+
+\section{Approval Signatures}
+
+\subsection{QA Lead}
+
+\begin{tabular}{p{6cm}p{4cm}p{3cm}}
+\rule{5cm}{0.4pt} & \rule{3cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+Name & Signature & Date \\
+QA Lead & & \\
+\end{tabular}
+
+\vspace{1cm}
+
+\subsection{Development Lead}
+
+\begin{tabular}{p{6cm}p{4cm}p{3cm}}
+\rule{5cm}{0.4pt} & \rule{3cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+Name & Signature & Date \\
+Development Lead & & \\
+\end{tabular}
+
+\vspace{1cm}
+
+\subsection{Project Manager}
+
+\begin{tabular}{p{6cm}p{4cm}p{3cm}}
+\rule{5cm}{0.4pt} & \rule{3cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+Name & Signature & Date \\
+Project Manager & & \\
+\end{tabular}
+
+\vspace{1cm}
+
+\subsection{Product Owner}
+
+\begin{tabular}{p{6cm}p{4cm}p{3cm}}
+\rule{5cm}{0.4pt} & \rule{3cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+Name & Signature & Date \\
+Product Owner & & \\
+\end{tabular}
+
+\vspace{1cm}
+
+\subsection{QA Director}
+
+\begin{tabular}{p{6cm}p{4cm}p{3cm}}
+\rule{5cm}{0.4pt} & \rule{3cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+Name & Signature & Date \\
+QA Director & & \\
+\end{tabular}
+
+\vspace{1cm}
+
+\subsection{Engineering Manager}
+
+\begin{tabular}{p{6cm}p{4cm}p{3cm}}
+\rule{5cm}{0.4pt} & \rule{3cm}{0.4pt} & \rule{2.5cm}{0.4pt} \\
+Name & Signature & Date \\
+Engineering Manager & & \\
+\end{tabular}
+
+\vspace{2cm}
+
+\section{Change Control}
+
+Any changes to this test plan must be approved by the QA Lead and Project Manager. All changes will be documented in the version history table and communicated to all stakeholders.
+
+\section{Distribution List}
+
+This document has been distributed to:
+\begin{enumerate}
+    \item QA Lead
+    \item Development Lead
+    \item Project Manager
+    \item Product Owner
+    \item QA Director
+    \item Engineering Manager
+    \item Test Team Members
+    \item Development Team
+    \item Department of CSE, SIT Tumkur
+\end{enumerate}
+
+\vspace{1cm}
+
+\begin{center}
+\textbf{--- End of Test Plan Document ---}
+\end{center}
+
+\end{document}

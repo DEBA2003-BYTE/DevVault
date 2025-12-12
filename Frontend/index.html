@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk-Based Authentication - Login</title>
+  <meta name="description" content="Secure login with risk-based authentication and location tracking">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+    }
+
+    .auth-card {
+      max-width: 1400px;
+      width: 100%;
+      padding: 3rem;
+    }
+
+    .auth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 2rem;
+    }
+
+    .delete-counter {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      background: var(--light-blue);
+      border: 2px solid var(--primary-blue);
+      padding: 0.875rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      color: var(--primary-blue);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .session-timer {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--light-blue);
+      border: 2px solid var(--primary-blue);
+      padding: 0.875rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      color: var(--primary-blue);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .location-status {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--gray-200);
+      background: var(--gray-50);
+      text-align: center;
+    }
+
+    .location-details {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .location-btn {
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    .map-container {
+      height: 450px;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .auth-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .auth-container {
+        padding: 1.5rem;
+      }
+
+      .auth-card {
+        padding: 2rem;
+      }
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 1rem;
+      background: var(--gray-100);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .tab-btn.active {
+      background: var(--primary-gradient);
+      color: white;
+      border-color: transparent;
+      box-shadow: var(--shadow-md);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .forgot-password-link {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+
+    .forgot-password-link a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .forgot-password-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="animated-bg"></div>
+
+  <div class="auth-container">
+    <div class="card auth-card">
+      <div style="position: relative;">
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;">
+          <div class="delete-counter" style="position: static; margin: 0;">
+            🔄 Deletions: <span id="deleteCount">0</span>
+          </div>
+          <div class="session-timer" style="position: static; margin: 0;">
+            ⏱️ Session: <span id="sessionTime">0</span>s
+          </div>
+          <div class="session-timer" id="currentTimeDisplay" style="position: static; margin: 0;">
+            🕐 Time: <span id="currentTime">--:--</span>
+          </div>
+        </div>
+
+        <div class="card-header text-center">
+          <h1 class="card-title" style="font-size: 2rem; margin-bottom: 0.5rem;">DEVVAULT</h1>
+        </div>
+
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+          <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Tab -->
+        <div class="tab-content active" id="loginTab">
+          <div class="auth-grid">
+            <div>
+              <div class="location-status">
+                <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">📍 Location Access</p>
+                <p id="locationStatus" style="font-weight: 600;">Not Granted</p>
+                <div id="locationDetails" class="location-details hidden">
+                  <p><strong>Latitude:</strong> <span id="loginLat">-</span></p>
+                  <p><strong>Longitude:</strong> <span id="loginLng">-</span></p>
+                  <p><strong>Address:</strong> <span id="loginAddress">Loading...</span></p>
+                </div>
+              </div>
+
+              <button class="btn btn-primary location-btn" id="locationBtn" onclick="toggleLocation()">
+                Allow Location Access
+              </button>
+
+              <div class="map-container" id="map"></div>
+            </div>
+
+            <div>
+              <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                  <label class="form-label">Username</label>
+                  <input type="text" class="form-input" id="loginUsername" placeholder="Enter your username" disabled
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password"
+                    disabled required>
+                  <div class="forgot-password-link">
+                    <a href="#" onclick="showForgotPassword(event)">Forgot Password?</a>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;" disabled id="loginSubmitBtn">
+                  Login
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Signup Tab -->
+        <div class="tab-content" id="signupTab">
+          <div class="auth-grid">
+            <div>
+              <div class="location-status">
+                <p style="margin-bottom: 0.5rem; color: var(--text-secondary);">📍 Location Access</p>
+                <p id="signupLocationStatus" style="font-weight: 600;">Not Granted</p>
+                <div id="signupLocationDetails" class="location-details hidden">
+                  <p><strong>Latitude:</strong> <span id="signupLat">-</span></p>
+                  <p><strong>Longitude:</strong> <span id="signupLng">-</span></p>
+                  <p><strong>Address:</strong> <span id="signupAddress">Loading...</span></p>
+                </div>
+              </div>
+
+              <button class="btn btn-primary location-btn" id="signupLocationBtn" onclick="toggleSignupLocation()">
+                Allow Location Access
+              </button>
+
+              <div class="map-container" id="signupMap"></div>
+            </div>
+
+            <div>
+              <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                  <label class="form-label">Username</label>
+                  <input type="text" class="form-input" id="signupUsername" placeholder="Choose a username" disabled
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-input" id="signupPassword" placeholder="Create a password" disabled
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">OTP Email (Optional - for MFA)</label>
+                  <input type="email" class="form-input" id="otpEmail" placeholder="Enter email for OTP" disabled>
+                  <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                    This email will be used for two-factor authentication when risk is detected.
+                  </p>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;" disabled id="signupSubmitBtn">
+                  Sign Up
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal" id="forgotPasswordModal">
+    <div class="modal-content">
+      <h2 class="card-title">Forgot Password</h2>
+      <p style="color: var(--text-secondary); margin: 1rem 0;">Enter your username to receive your password via email
+      </p>
+
+      <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="forgotUsername" placeholder="Enter your username" required>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" style="flex: 1;"
+            onclick="closeForgotPasswordModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Send Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+
+</html>

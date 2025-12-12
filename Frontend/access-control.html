@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control - DEVVAULT</title>
+    <meta name="description" content="Risk-based access control verification">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .access-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .access-card {
+            max-width: 600px;
+            width: 100%;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .risk-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .risk-low {
+            color: #4CAF50;
+        }
+
+        .risk-medium {
+            color: #ff9800;
+        }
+
+        .risk-high {
+            color: #f44336;
+        }
+
+        .risk-score {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .risk-message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .risk-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .otp-container {
+            margin: 2rem 0;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .otp-input {
+            width: 60px;
+            height: 60px;
+            font-size: 2rem;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+        }
+
+        .otp-input:focus {
+            border-color: var(--primary-blue);
+            outline: none;
+        }
+
+        .otp-status {
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        .checkmark {
+            color: #4CAF50;
+            font-size: 2rem;
+            margin-left: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="animated-bg"></div>
+
+    <div class="access-container">
+        <div class="card access-card">
+            <div id="riskContent">
+                <!-- Content will be dynamically loaded -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Get data from sessionStorage
+        const accessData = JSON.parse(sessionStorage.getItem('accessData') || '{}');
+
+        if (!accessData.action) {
+            window.location.href = 'index.html';
+        }
+
+        const riskScore = accessData.riskScore || 0;
+        const action = accessData.action;
+        const userId = accessData.userId;
+        const otpEmail = accessData.otpEmail;
+        const blockedUntil = accessData.blockedUntil;
+
+        let otpVerified = false;
+
+        function renderLowRisk() {
+            document.getElementById('riskContent').innerHTML = `
+                <div class="risk-icon risk-low">✓</div>
+                <div class="risk-score risk-low">${riskScore}</div>
+                <div class="risk-message risk-low">Low Risk: Access Allowed</div>
+                <p class="risk-description">Your login appears secure. Click below to enter your dashboard.</p>
+                <button class="btn btn-success" onclick="enterDashboard()" style="padding: 1rem 3rem; font-size: 1.1rem;">
+                    Enter Dashboard
+                </button>
+            `;
+        }
+
+        function renderMediumRisk() {
+            document.getElementById('riskContent').innerHTML = `
+                <div class="risk-icon risk-medium">⚠️</div>
+                <div class="risk-score risk-medium">${riskScore}</div>
+                <div class="risk-message risk-medium">Medium Risk: MFA Required</div>
+                <p class="risk-description">
+                    An OTP has been sent to <strong>${otpEmail}</strong><br>
+                    Please enter the 4-digit code to continue.
+                </p>
+                
+                <div class="otp-container">
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-input" maxlength="1" id="otp1" oninput="moveToNext(this, 'otp2')" onkeydown="handleBackspace(event, this, null)">
+                        <input type="text" class="otp-input" maxlength="1" id="otp2" oninput="moveToNext(this, 'otp3')" onkeydown="handleBackspace(event, this, 'otp1')">
+                        <input type="text" class="otp-input" maxlength="1" id="otp3" oninput="moveToNext(this, 'otp4')" onkeydown="handleBackspace(event, this, 'otp2')">
+                        <input type="text" class="otp-input" maxlength="1" id="otp4" oninput="verifyOTP()" onkeydown="handleBackspace(event, this, 'otp3')">
+                    </div>
+                    <div id="otpStatus" class="otp-status"></div>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Back to Login</button>
+                </div>
+            `;
+
+            // Focus first input
+            setTimeout(() => document.getElementById('otp1').focus(), 100);
+        }
+
+        function renderHighRisk() {
+            const blockedMessage = blockedUntil
+                ? `You are blocked until ${new Date(blockedUntil).toLocaleString()}`
+                : 'You have been blocked for 4 hours';
+
+            document.getElementById('riskContent').innerHTML = `
+                <div class="risk-icon risk-high">🚫</div>
+                <div class="risk-score risk-high">${riskScore}</div>
+                <div class="risk-message risk-high">High Risk: Account Blocked</div>
+                <p class="risk-description">
+                    ${blockedMessage}<br>
+                    You can wait or ask the admin to unblock you.
+                </p>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="goBack()">Back to Login</button>
+                </div>
+            `;
+        }
+
+        function moveToNext(current, nextId) {
+            if (current.value.length === 1 && nextId) {
+                document.getElementById(nextId).focus();
+            }
+        }
+
+        function handleBackspace(event, current, prevId) {
+            if (event.key === 'Backspace' && current.value === '' && prevId) {
+                document.getElementById(prevId).focus();
+            }
+        }
+
+        async function verifyOTP() {
+            const otp1 = document.getElementById('otp1').value;
+            const otp2 = document.getElementById('otp2').value;
+            const otp3 = document.getElementById('otp3').value;
+            const otp4 = document.getElementById('otp4').value;
+
+            if (otp1 && otp2 && otp3 && otp4) {
+                const otp = otp1 + otp2 + otp3 + otp4;
+                const statusDiv = document.getElementById('otpStatus');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/auth/verify-mfa`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            userId: userId,
+                            otp: otp
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        otpVerified = true;
+                        statusDiv.innerHTML = '<span style="color: #4CAF50;">✓ Correct OTP</span><span class="checkmark">✓</span>';
+
+                        // Store token
+                        localStorage.setItem('authToken', data.token);
+                        localStorage.setItem('userInfo', JSON.stringify(data.user));
+
+                        // Clear session data
+                        sessionStorage.removeItem('accessData');
+
+                        // Redirect to dashboard after 1 second
+                        setTimeout(() => {
+                            window.location.href = 'user-dashboard.html';
+                        }, 1000);
+                    } else {
+                        statusDiv.innerHTML = '<span style="color: #f44336;">✗ Invalid OTP</span>';
+                        // Clear inputs
+                        document.getElementById('otp1').value = '';
+                        document.getElementById('otp2').value = '';
+                        document.getElementById('otp3').value = '';
+                        document.getElementById('otp4').value = '';
+                        document.getElementById('otp1').focus();
+                    }
+                } catch (error) {
+                    console.error('Error verifying OTP:', error);
+                    statusDiv.innerHTML = '<span style="color: #f44336;">Error verifying OTP</span>';
+                }
+            }
+        }
+
+        function enterDashboard() {
+            const token = accessData.token;
+            const user = accessData.user;
+
+            if (token && user) {
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('userInfo', JSON.stringify(user));
+                sessionStorage.removeItem('accessData');
+                window.location.href = 'user-dashboard.html';
+            }
+        }
+
+        function goBack() {
+            sessionStorage.removeItem('accessData');
+            window.location.href = 'index.html';
+        }
+
+        // Render appropriate content based on action
+        if (action === 'access_granted') {
+            renderLowRisk();
+        } else if (action === 'mfa_required') {
+            renderMediumRisk();
+        } else if (action === 'blocked') {
+            renderHighRisk();
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+
+</html>
