@@ -1,5 +1,8 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5001/api';
+// Auto-detect environment: use Vercel URL in production, localhost in development
+const API_BASE_URL = window.location.hostname === 'localhost' 
+    ? 'http://localhost:5001/api'
+    : `${window.location.origin}/api`;
 
 // API Endpoints
 const API = {

@@ -1,0 +1,49 @@
+{
+  "version": 2,
+  "name": "sentinelvault",
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "Frontend/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/Frontend/js/$1"
+    },
+    {
+      "src": "/styles.css",
+      "dest": "/Frontend/styles.css"
+    },
+    {
+      "src": "/(.*\\.html)",
+      "dest": "/Frontend/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/Frontend/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/Frontend/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "api/index.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
+}
