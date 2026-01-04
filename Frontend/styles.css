@@ -189,6 +189,15 @@ body {
   color: var(--gray-800);
 }
 
+/* Disable text selection for password and username fields */
+.form-input[type="text"],
+.form-input[type="password"] {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 .form-input:focus,
 .form-select:focus {
   outline: none;
@@ -391,27 +400,6 @@ tr:hover {
   gap: var(--spacing-xl);
 }
 
-.delete-counter,
-.session-timer {
-  position: absolute;
-  top: 1rem;
-  background: var(--light-blue);
-  border: 2px solid var(--primary-blue);
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  color: var(--primary-blue);
-  box-shadow: var(--shadow-sm);
-}
-
-.delete-counter {
-  left: 1rem;
-}
-
-.session-timer {
-  right: 1rem;
-}
-
 .location-status {
   margin-bottom: var(--spacing-md);
   padding: var(--spacing-md);
@@ -472,12 +460,6 @@ tr:hover {
   .navbar-content {
     flex-direction: column;
     gap: var(--spacing-md);
-  }
-
-  .delete-counter,
-  .session-timer {
-    position: static;
-    margin-bottom: var(--spacing-sm);
   }
 }
 

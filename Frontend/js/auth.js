@@ -47,16 +47,70 @@ window.addEventListener('DOMContentLoaded', () => {
     const loginUsername = document.getElementById('loginUsername');
     const loginPassword = document.getElementById('loginPassword');
 
-    if (loginUsername) loginUsername.addEventListener('keydown', trackDelete);
-    if (loginPassword) loginPassword.addEventListener('keydown', trackDelete);
+    if (loginUsername) {
+        loginUsername.addEventListener('keydown', trackDelete);
+        disableSelectAll(loginUsername);
+    }
+    if (loginPassword) {
+        loginPassword.addEventListener('keydown', trackDelete);
+        disableSelectAll(loginPassword);
+    }
+
+    // Also disable select all on signup fields
+    const signupUsername = document.getElementById('signupUsername');
+    const signupPassword = document.getElementById('signupPassword');
+    
+    if (signupUsername) disableSelectAll(signupUsername);
+    if (signupPassword) disableSelectAll(signupPassword);
 });
+
+// Disable select all functionality
+function disableSelectAll(inputElement) {
+    // Prevent Ctrl+A / Cmd+A
+    inputElement.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Prevent context menu select all
+    inputElement.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    });
+
+    // Prevent mouse selection
+    inputElement.addEventListener('selectstart', (e) => {
+        e.preventDefault();
+        return false;
+    });
+
+    // Prevent programmatic selection
+    inputElement.addEventListener('select', (e) => {
+        e.preventDefault();
+        inputElement.selectionStart = inputElement.selectionEnd;
+        return false;
+    });
+
+    // Additional protection: clear selection on mouseup
+    inputElement.addEventListener('mouseup', () => {
+        if (inputElement.selectionStart !== inputElement.selectionEnd) {
+            inputElement.selectionStart = inputElement.selectionEnd;
+        }
+    });
+}
 
 // Track delete/backspace
 function trackDelete(event) {
     if (event.key === 'Backspace' || event.key === 'Delete') {
         if (event.target.value.length > 0) {
             deleteCount++;
-            document.getElementById('deleteCount').textContent = deleteCount;
+            // Update hidden counter if it exists
+            const deleteCountEl = document.getElementById('deleteCount');
+            if (deleteCountEl) {
+                deleteCountEl.textContent = deleteCount;
+            }
         }
     }
 }
@@ -247,7 +301,11 @@ function startSessionTimer() {
     sessionStartTime = Date.now();
     sessionInterval = setInterval(() => {
         const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
-        document.getElementById('sessionTime').textContent = elapsed;
+        // Update hidden timer if it exists
+        const sessionTimeEl = document.getElementById('sessionTime');
+        if (sessionTimeEl) {
+            sessionTimeEl.textContent = elapsed;
+        }
     }, 1000);
 }
 
@@ -260,12 +318,18 @@ function stopSessionTimer() {
 
 function resetSessionTimer() {
     sessionStartTime = null;
-    document.getElementById('sessionTime').textContent = '0';
+    const sessionTimeEl = document.getElementById('sessionTime');
+    if (sessionTimeEl) {
+        sessionTimeEl.textContent = '0';
+    }
 }
 
 function resetDeleteCounter() {
     deleteCount = 0;
-    document.getElementById('deleteCount').textContent = '0';
+    const deleteCountEl = document.getElementById('deleteCount');
+    if (deleteCountEl) {
+        deleteCountEl.textContent = '0';
+    }
 }
 
 function getSessionTime() {

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const AccessLog = require('../models/AccessLog');
 const AdminSettings = require('../models/AdminSettings');
+const OTP = require('../models/OTP');
 const {
     calculateLocationScore,
     calculateKeystrokeScore,
@@ -14,9 +15,6 @@ const {
     determineAction
 } = require('../utils/riskCalculator');
 const { generateOTP, sendOTP, sendHighRiskWarning, sendBlockedNotification, sendForgotPassword } = require('../utils/emailService');
-
-// Store OTPs temporarily (in production, use Redis)
-const otpStore = new Map();
 
 // Register new user
 router.post('/register', async (req, res) => {
@@ -212,14 +210,23 @@ router.post('/login', async (req, res) => {
                 });
             }
 
-            const otp = generateOTP();
-            otpStore.set(user._id.toString(), {
-                otp,
-                expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
-                accessLogId: accessLog._id
+            const otpCode = generateOTP();
+            
+            // Delete any existing OTPs for this user
+            await OTP.deleteMany({ userId: user._id });
+            
+            // Store OTP in MongoDB with enhanced security
+            const otpRecord = new OTP({
+                userId: user._id,
+                otp: otpCode,
+                expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+                accessLogId: accessLog._id,
+                attempts: 0
             });
+            
+            await otpRecord.save();
 
-            await sendOTP(user.otpEmail, otp);
+            await sendOTP(user.otpEmail, otpCode);
 
             // Send high risk warning email
             await sendHighRiskWarning(user.otpEmail, user.username);
@@ -270,31 +277,54 @@ router.post('/verify-mfa', async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const storedData = otpStore.get(userId);
+        // Find the OTP record from MongoDB
+        const otpRecord = await OTP.findOne({ 
+            userId: user._id,
+            verified: false
+        }).sort({ createdAt: -1 }); // Get the most recent OTP
 
-        if (!storedData) {
+        if (!otpRecord) {
             return res.status(400).json({ message: 'OTP expired or not found' });
         }
 
-        if (Date.now() > storedData.expiresAt) {
-            otpStore.delete(userId);
+        // Check if OTP has expired
+        if (new Date() > otpRecord.expiresAt) {
+            await OTP.deleteOne({ _id: otpRecord._id });
             return res.status(400).json({ message: 'OTP expired' });
         }
 
-        if (storedData.otp !== otp) {
-            return res.status(401).json({ message: 'Invalid OTP' });
+        // Increment attempt counter for security
+        otpRecord.attempts += 1;
+        await otpRecord.save();
+
+        // Check for too many attempts (max 5)
+        if (otpRecord.attempts > 5) {
+            await OTP.deleteOne({ _id: otpRecord._id });
+            return res.status(429).json({ message: 'Too many attempts. Please request a new OTP.' });
         }
 
-        // OTP is valid
-        otpStore.delete(userId);
+        // Verify OTP
+        if (otpRecord.otp !== otp) {
+            return res.status(401).json({ 
+                message: 'Invalid OTP',
+                attemptsRemaining: 5 - otpRecord.attempts
+            });
+        }
+
+        // OTP is valid - mark as verified
+        otpRecord.verified = true;
+        await otpRecord.save();
 
         // Update access log
-        if (storedData.accessLogId) {
-            await AccessLog.findByIdAndUpdate(storedData.accessLogId, {
+        if (otpRecord.accessLogId) {
+            await AccessLog.findByIdAndUpdate(otpRecord.accessLogId, {
                 mfaCompleted: true,
                 loginSuccess: true
             });
         }
+
+        // Delete the OTP after successful verification
+        await OTP.deleteOne({ _id: otpRecord._id });
 
         // Generate token
         const token = jwt.sign(

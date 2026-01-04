@@ -164,21 +164,15 @@
   <div class="auth-container">
     <div class="card auth-card">
       <div style="position: relative;">
-        <div
-          style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;">
-          <div class="delete-counter" style="position: static; margin: 0;">
-            🔄 Deletions: <span id="deleteCount">0</span>
-          </div>
-          <div class="session-timer" style="position: static; margin: 0;">
-            ⏱️ Session: <span id="sessionTime">0</span>s
-          </div>
-          <div class="session-timer" id="currentTimeDisplay" style="position: static; margin: 0;">
-            🕐 Time: <span id="currentTime">--:--</span>
-          </div>
-        </div>
-
         <div class="card-header text-center">
           <h1 class="card-title" style="font-size: 2rem; margin-bottom: 0.5rem;">DEVVAULT</h1>
+        </div>
+        
+        <!-- Hidden counters for tracking (not visible to user) -->
+        <div style="display: none;">
+          <span id="deleteCount">0</span>
+          <span id="sessionTime">0</span>
+          <span id="currentTime">--:--</span>
         </div>
 
         <div class="tab-buttons">
