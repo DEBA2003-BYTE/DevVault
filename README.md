@@ -151,37 +151,6 @@ Password: qwerty123
 
 ---
 
-## ⚙️ Configuration
-
-### Environment Variables (`Backend/.env`)
-
-```env
-# MongoDB
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/devvault
-
-# JWT Secret
-JWT_SECRET=your-super-secret-jwt-key-change-this
-
-# Admin
-ADMIN_PASSWORD=qwerty123
-
-# AWS S3
-AWS_ACCESS_KEY_ID=your-aws-access-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret-key
-AWS_REGION=us-east-1
-AWS_BUCKET_NAME=your-bucket-name
-
-# Email (Gmail)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-
-# Server
-PORT=5001
-NODE_ENV=development
-```
-
 ### Quick Setup Guides
 
 **Gmail App Password:**
